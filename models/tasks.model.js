@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const {ProjectModel}=require("./projects.model")
 const Schema = mongoose.Schema;
 const taskSchema  = mongoose.Schema({
-    task : {type:String,required:true},
-    date : {type:String,required:true},
-    startTime : {type:String,required:true} ,
-    endTime: {type:String, required:true},
+    task : {type:String},
+    date : {type:String},
+    startTime : {type:String} ,
+    endTime: {type:String},
     userId : {type:Schema.Types.ObjectId,ref:"user"},
     projectId:{type:Schema.Types.ObjectId,ref:"project"},
     totalTimeInSec : {type:Number}
