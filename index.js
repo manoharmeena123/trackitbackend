@@ -24,7 +24,7 @@ const {generateOtpRouter} = require("./routes/generateotpmail")
 const {newtokenRouter} = require("./routes/newtoken")
 app.get("/",(req,res)=>{
    console.log(req.cookies)
-   res.json("Welcome")
+   res.json("Welcome to Track it")
 
 })
 
