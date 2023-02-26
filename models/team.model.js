@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const teamSchema  = mongoose.Schema({
-    name : {type:String,required:true},
-    email : {type:String,required:true},
-    billableRate : {type:Number,required:true} ,
-    role: {type:String, required:true},
+    name : {type:String},
+    email : {type:String},
+    billableRate : {type:Number} ,
+    role: {type:String},
     userId : {type:Schema.Types.ObjectId,ref:"user"},
     
 
