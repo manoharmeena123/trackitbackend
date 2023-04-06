@@ -20,7 +20,7 @@ userRouter.post("/register", async (req, res) => {
     const user = await UserModel.find({ "email": email });
 
     if (user.length == 1) {
-        res.send("Already exist,Please login")
+        res.send("Already exist, Please login")
     } else {
         try {
             bcrypt.hash(password, 5, async (err, hash) => {
