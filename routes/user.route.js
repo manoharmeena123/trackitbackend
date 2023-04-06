@@ -38,7 +38,7 @@ userRouter.post("/register" ,async(req,res)=>{
 // let OTP = req.cookies.OTP
 // console.log(OTP)
 const user = await UserModel.findOne({email})
-if(user){
+if(user.length >=1){
     res.json("Already exist,Please login")
 }else{
     
