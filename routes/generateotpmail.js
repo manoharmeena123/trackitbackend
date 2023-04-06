@@ -1,16 +1,12 @@
-
-const express = require("express")
 const nodemailer = require("nodemailer")
-const cookieparser = require("cookie-parser")
-const {redis} = require("../service/redis")
-// const {UserModel} = require("../models/user.model")
+const { UserModel } = require("../models/user.model")
 
-function generate(){
+
+function generate() {
     return Math.floor(1000 + Math.random() * 9000)
 }
-let OTP = generate()
 
-  const mail = async (req, res, next) => {
+const mail = async (req, res, next) => {
     try {
         const OTP = generate();
         const transporter = nodemailer.createTransport({
@@ -20,12 +16,14 @@ let OTP = generate()
                 pass: 'wwqvftbyxzotbchw'
             }
         });
-        
+
         const users = await UserModel.find({ email: req.body.email });
         if (users.length >= 1) {
             return res.status(401).send({ "msg": "User already present" });
+        } else {
+            res.status(200).json(OTP);
         }
-        
+
         await transporter.sendMail({
             to: req.body.email,
             from: "manoharmeena245@gmail.com",
@@ -33,12 +31,13 @@ let OTP = generate()
             text: `OTP Vefification ${OTP}`
         });
 
-        res.json(OTP);
         next();
     } catch (error) {
         res.send("OTP Not Generated!");
     }
 };
-        module.exports= {
-            mail
-        }
+
+
+module.exports = {
+    mail
+}
