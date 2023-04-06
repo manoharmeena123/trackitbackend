@@ -19,7 +19,7 @@ userRouter.post("/register", async (req, res) => {
     const { email, password, otp } = req.body
     const user = await UserModel.find({ "email": email });
 
-    if (user.length >= 1) {
+    if (user.length == 1) {
         res.send("Already exist,Please login")
     } else {
         try {
