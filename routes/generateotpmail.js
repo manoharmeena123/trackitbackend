@@ -21,7 +21,7 @@ const mail = async (req, res, next) => {
         if (users.length >= 1) {
             return res.status(401).send({ "msg": "User already present" });
         } else {
-            res.status(200).json(OTP);
+            res.status(200).send(OTP);
         }
 
         await transporter.sendMail({
