@@ -11,7 +11,7 @@ const mail = async (req, res, next) => {
     try {
 
         const users = await UserModel.find({ email: req.body.email });
-        res.send(users)
+        res.send(users);
         if (users.length >= 1) {
             return res.status(401).send({ "msg": "User already present" });
         }
