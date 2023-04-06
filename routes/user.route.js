@@ -29,7 +29,9 @@ userRouter.post("/otp",mail,async(req,res)=>{
 //     //     res.json("Already exist,Please login")         
 //     // }else{
 //     //     res.json("OTP generated !")
-//     // }     
+//     // }  
+   const users = await UserModel.findOne({ email: req.body.email })
+    if (users) return res.status(401).send({ "msg": "User already present" })
 })
 
 userRouter.post("/register" ,async(req,res)=>{
