@@ -8,6 +8,13 @@ function generate() {
 
 const mail = async (req, res, next) => {
     try {
+
+        const users = await UserModel.find({ email: req.body.email });
+        res.send(users);
+        if (users.length >= 1) {
+            return res.status(401).send({ "msg": "User already present" });
+        }
+
         const OTP = generate();
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -17,12 +24,6 @@ const mail = async (req, res, next) => {
             }
         });
 
-        const users = await UserModel.find({ email: req.body.email });
-        if (users.length >= 1) {
-            return res.status(401).send({ "msg": "User already present" });
-        } else {
-            res.status(200).send(OTP);
-        }
 
         await transporter.sendMail({
             to: req.body.email,
@@ -31,6 +32,7 @@ const mail = async (req, res, next) => {
             text: `OTP Vefification ${OTP}`
         });
 
+        // res.status(200).send(OTP);
         next();
     } catch (error) {
         res.send("OTP Not Generated!");
