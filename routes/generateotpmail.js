@@ -11,9 +11,9 @@ const mail = async (req, res, next) => {
     try {
 
         const users = await UserModel.find({ email: req.body.email });
-        res.send(users);
-        if (users.length >= 1) {
-            return res.status(401).send({ "msg": "User already present" });
+        if (users.length == 1) {
+            res.json({ "msg": "User already present" });
+            return;
         }
 
         const OTP = generate();
@@ -33,10 +33,10 @@ const mail = async (req, res, next) => {
             text: `OTP Vefification ${OTP}`
         });
 
-        // res.status(200).send(OTP);
+        res.json(OTP);
         next();
     } catch (error) {
-        res.send("OTP Not Generated!");
+        res.json("OTP Not Generated!");
     }
 };
 
