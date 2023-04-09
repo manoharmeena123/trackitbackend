@@ -92,10 +92,20 @@ taskRouter.patch("/updateTimer/:id", async (req, res) => {
 
 //delete tasks
 taskRouter.delete("/delete/:id", async (req, res) => {
+    let _id = req.params.id;
+    let projectName = req.headers.projectname;
+    let time = req.headers.totaltime;
+
     try {
-        let _id = req.params.id;
-        await TaskModel.findByIdAndRemove(_id);
-        res.send({ "msg": "Deleted Successfully" });
+        await TaskModel.findByIdAndDelete(_id);
+        let project = await ProjectModel.findOne({ "projectName": projectName });
+        if (project.timeTracked >= time) {
+            project.timeTracked -= time;
+            await project.save();
+            res.send({ "msg": "Updated Successfully" });
+        } else {
+            res.send({ "msg": "No time tracked records found or invalid data" });
+        }
     } catch (err) {
         res.send({ "msg": "Something went wrong please try again" });
     }
