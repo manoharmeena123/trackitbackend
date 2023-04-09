@@ -43,16 +43,17 @@ taskRouter.patch("/update/:id", async (req, res) => {
     let payload = req.body;
     let { totalTime } = req.body;
     let projectName = req.headers.projectname;
-    console.log(payload, projectName)
     try {
         let _id = req.params.id;
         await TaskModel.findByIdAndUpdate(_id, payload);
         if (projectName.length > 0) {
-            let project = await ProjectModel.find({ "projectName": projectName });
-            project.timeTracked = totalTime - timeTracked;
+            let project = await ProjectModel.findOne({ "projectName": projectName });
+            project.timeTracked += totalTime;
             await project.save();
+            res.send({ "msg": "Updated Successfully" });
+        } else {
+            res.send({ "msg": "No time tracked records found or invalid data" });
         }
-        res.send({ "msg": "Updated Successfully" });
     } catch (err) {
         res.send({ "msg": "Something went wrong please try again" });
     }
