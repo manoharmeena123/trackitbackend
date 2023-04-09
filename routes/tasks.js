@@ -8,11 +8,11 @@ const taskRouter = express.Router();
 taskRouter.get("/:id", async (req, res) => {
     let user = req.params.id;
     try {
-        let tasks = await TaskModel.find({ user }).sort({"date": -1});
+        let tasks = await TaskModel.find({ user }).sort({ "date": -1 });
         res.send(tasks)
     }
     catch (err) {
-        res.send("msg", "Something went wrong please try again");
+        res.send({ "msg": "Something went wrong please try again" });
     }
 });
 
@@ -33,7 +33,7 @@ taskRouter.post("/", async (req, res) => {
         res.send(out);
     }
     catch (err) {
-        res.send("msg", "Something went wrong please try again");
+        res.send({ "msg": "Something went wrong please try again" });
     }
 })
 
@@ -43,19 +43,46 @@ taskRouter.patch("/update/:id", async (req, res) => {
     let payload = req.body;
     let { totalTime } = req.body;
     let projectName = req.headers.projectname;
+    console.log(payload, projectName)
     try {
         let _id = req.params.id;
         await TaskModel.findByIdAndUpdate(_id, payload);
         if (projectName.length > 0) {
-            let project = await ProjectModel.findOne({ projectName: projectName });
-            project.timeTracked += totalTime;
+            let project = await ProjectModel.find({ "projectName": projectName });
+            project.timeTracked = totalTime - timeTracked;
             await project.save();
         }
         res.send({ "msg": "Updated Successfully" });
     } catch (err) {
-        res.send("msg", "Something went wrong please try again");
+        res.send({ "msg": "Something went wrong please try again" });
     }
 });
+
+
+taskRouter.patch("/updateTimer/:id", async (req, res) => {
+    let { totalTime, projectName } = req.body;
+    try {
+        let _id = req.params.id;
+        let task = await TaskModel.findOne({ "_id": _id });
+        let project = await ProjectModel.findOne({ "projectName": projectName });
+        if (project.timeTracked >= 0 && (totalTime - task.totalTime) >= 0) {
+            project.timeTracked = project.timeTracked + (totalTime - task.totalTime);
+            await project.save();
+            if (task.totalTime >= 0) {
+                task.totalTime = totalTime;
+                await task.save();
+            }
+            res.send({ "msg": "Updated Successfully" });
+        } else {
+            res.send({ "msg": "No time tracked records found or invalid data" });
+        }
+    } catch (err) {
+        res.send({ "msg": "Something went wrong please try again" });
+    }
+});
+
+
+
 
 
 
@@ -69,7 +96,7 @@ taskRouter.delete("/delete/:id", async (req, res) => {
         await TaskModel.findByIdAndRemove(_id);
         res.send({ "msg": "Deleted Successfully" });
     } catch (err) {
-        res.send("msg", "Something went wrong please try again");
+        res.send({ "msg": "Something went wrong please try again" });
     }
 })
 
